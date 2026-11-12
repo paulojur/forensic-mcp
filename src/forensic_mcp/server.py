@@ -39,6 +39,21 @@ def create_server(
     audit = AuditLogger(resolved_audit, evidence_root=resolved_root)
     adapter = tsk_adapter or TSKAdapter()
 
+    # Startup check: verify if the evidence root is writable and log an audit warning if so
+    if resolved_root is not None and resolved_root.exists() and os.access(resolved_root, os.W_OK):
+        audit.log(
+            rpc_call_id=new_rpc_call_id(),
+            tool="server_startup",
+            params={"evidence_root": str(resolved_root)},
+            status="ok",
+            outcome={
+                "warning": (
+                    "FORENSIC_MCP_EVIDENCE_ROOT is writable by current process. "
+                    "Read-only assurance currently depends on application-level and architectural controls."
+                )
+            },
+        )
+
     server = MCPServer(
         name="forensic-mcp",
         title="Forensic Read-Only MCP Server",

@@ -16,7 +16,12 @@ from forensic_mcp.models import (
 )
 
 _CHUNK_SIZE = 65536
-_IMAGE_HASH_CACHE: dict[Path, str] = {}
+_IMAGE_HASH_CACHE: dict[tuple[str, int, int], str] = {}
+
+
+def clear_image_hash_cache() -> None:
+    """Clear the in-memory image hash cache."""
+    _IMAGE_HASH_CACHE.clear()
 
 
 def get_cached_or_compute_image_hash(
@@ -25,7 +30,11 @@ def get_cached_or_compute_image_hash(
     provided_hash: str | None = None,
     rpc_call_id: str = "",
 ) -> str:
-    """Return verified image SHA-256 using provided hash, in-memory cache, or streaming computation."""
+    """Return verified image SHA-256 using provided hash, composite in-memory cache, or streaming.
+
+    The cache key is strictly composite: (absolute_path, size_in_bytes, mtime_ns).
+    Any modification in size, mtime, or path invalidates the cache and forces recomputation.
+    """
     if provided_hash:
         normalized = provided_hash.strip().lower()
         if not normalized.startswith("sha256:"):
@@ -33,8 +42,11 @@ def get_cached_or_compute_image_hash(
         return normalized
 
     resolved = path.resolve()
-    if resolved in _IMAGE_HASH_CACHE:
-        return _IMAGE_HASH_CACHE[resolved]
+    stat_res = resolved.stat()
+    cache_key = (str(resolved), stat_res.st_size, stat_res.st_mtime_ns)
+
+    if cache_key in _IMAGE_HASH_CACHE:
+        return _IMAGE_HASH_CACHE[cache_key]
 
     hasher = hashlib.sha256()
     with open_evidence_readonly(resolved, "rb", rpc_call_id=rpc_call_id) as fh:
@@ -42,7 +54,7 @@ def get_cached_or_compute_image_hash(
             hasher.update(chunk)
 
     digest = f"sha256:{hasher.hexdigest()}"
-    _IMAGE_HASH_CACHE[resolved] = digest
+    _IMAGE_HASH_CACHE[cache_key] = digest
     return digest
 
 

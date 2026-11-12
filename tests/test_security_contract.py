@@ -68,10 +68,9 @@ def test_mcp_tool_audit_log_and_no_sockets(
     rpc_call_id = payload["provenance"]["rpc_call_id"]
 
     lines = audit_log_path.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 1
-    record = json.loads(lines[0])
+    records = [json.loads(line) for line in lines]
+    record = next(r for r in records if r["tool"] == "hash_evidence_file")
     assert record["rpc_call_id"] == rpc_call_id
-    assert record["tool"] == "hash_evidence_file"
     assert record["status"] == "ok"
     assert record["params"]["case_id"] == "CASE-NET"
 
@@ -105,8 +104,8 @@ def test_mcp_tool_returns_structured_error_without_traceback(
     assert len(err_payload["rpc_call_id"]) > 0
 
     lines = audit_log_path.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 1
-    record = json.loads(lines[0])
+    records = [json.loads(line) for line in lines]
+    record = next(r for r in records if r["tool"] == "hash_evidence_file")
     assert record["status"] == "error"
     assert record["rpc_call_id"] == err_payload["rpc_call_id"]
     assert record["outcome"]["code"] == "EVIDENCE_NOT_FOUND"

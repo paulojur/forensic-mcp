@@ -19,14 +19,30 @@ def new_rpc_call_id() -> str:
 
 
 class Provenance(BaseModel):
-    """Mandatory 6-field provenance block attached to every forensic result."""
+    """Mandatory 6-field provenance block attached to every forensic result.
+
+    Semantics of the 'hash' field:
+    The `hash` field always contains the canonical SHA-256 digest of the root forensic
+    image or source artifact, prefixed with 'sha256:'. Hashes calculated on individual
+    files or artifacts extracted within the image reside in the operation's specific
+    result model (such as HashResult.md5 and HashResult.sha256), never in this provenance
+    block. This ensures an identical, immutable schema and semantics across all forensic tools.
+    """
 
     model_config = ConfigDict(frozen=True)
 
     case_id: str = Field(..., min_length=1, description="Investigation case identifier")
     source_id: str = Field(..., min_length=1, description="Forensic image or source identifier")
-    hash: str = Field(..., pattern=r"^sha256:[0-9a-f]{64}$", description="Canonical SHA-256 of the source artifact")
-    inodo_ruta: str = Field(..., min_length=1, description="Inode and exact path of the artifact")
+    hash: str = Field(
+        ...,
+        pattern=r"^sha256:[0-9a-f]{64}$",
+        description="Canonical SHA-256 of the source forensic image (sha256:<hex>)",
+    )
+    inodo_ruta: str = Field(
+        ...,
+        min_length=1,
+        description="Structured path of the artifact, e.g. offset:N:inode:N:name or file path",
+    )
     timestamp_utc: str = Field(..., min_length=1, description="UTC timestamp of the analysis")
     rpc_call_id: str = Field(..., min_length=1, description="Unique RPC call ID linking result to audit log")
 

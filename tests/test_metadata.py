@@ -70,10 +70,9 @@ def test_real_image_get_file_metadata_detlog(
 
     # Check audit log contains matching rpc_call_id
     lines = audit_log_path.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 1
-    record = json.loads(lines[0])
+    records = [json.loads(line) for line in lines]
+    record = next(r for r in records if r["tool"] == "get_file_metadata")
     assert record["rpc_call_id"] == prov["rpc_call_id"]
-    assert record["tool"] == "get_file_metadata"
     assert record["status"] == "ok"
 
 
@@ -152,8 +151,88 @@ def test_metadata_outside_evidence_root_rejected(
     assert len(err_payload["rpc_call_id"]) > 0
 
     lines = audit_log_path.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 1
-    record = json.loads(lines[0])
+    # If evidence_dir is writable, there may be a startup warning record before the error record
+    assert len(lines) >= 1
+    record = json.loads(lines[-1])
     assert record["status"] == "error"
     assert record["rpc_call_id"] == err_payload["rpc_call_id"]
+
+
+def test_hash_cache_invalidates_on_mtime_change(tmp_path: Path) -> None:
+    """Modifying file mtime must invalidate composite cache key and trigger recomputation."""
+    import os
+    import time
+    from forensic_mcp.tools.metadata import (
+        _IMAGE_HASH_CACHE,
+        clear_image_hash_cache,
+        get_cached_or_compute_image_hash,
+    )
+
+    clear_image_hash_cache()
+    test_file = tmp_path / "cache_mtime_test.bin"
+    test_file.write_bytes(b"initial-payload-for-mtime-test")
+
+    digest1 = get_cached_or_compute_image_hash(test_file)
+    assert len(_IMAGE_HASH_CACHE) == 1
+    key1 = next(iter(_IMAGE_HASH_CACHE.keys()))
+
+    # Shift mtime by +10 seconds without modifying content or size
+    new_mtime = time.time() + 10
+    os.utime(test_file, (new_mtime, new_mtime))
+
+    digest2 = get_cached_or_compute_image_hash(test_file)
+    assert digest1 == digest2
+    assert len(_IMAGE_HASH_CACHE) == 2
+    key2 = [k for k in _IMAGE_HASH_CACHE if k != key1][0]
+    assert key2[0] == key1[0]  # path is the same
+    assert key2[1] == key1[1]  # size is the same
+    assert key2[2] != key1[2]  # mtime_ns is different
+
+
+def test_hash_cache_invalidates_on_size_change(tmp_path: Path) -> None:
+    """Modifying file size must invalidate composite cache key and recalculate digest."""
+    from forensic_mcp.tools.metadata import (
+        _IMAGE_HASH_CACHE,
+        clear_image_hash_cache,
+        get_cached_or_compute_image_hash,
+    )
+
+    clear_image_hash_cache()
+    test_file = tmp_path / "cache_size_test.bin"
+    test_file.write_bytes(b"short")
+
+    digest1 = get_cached_or_compute_image_hash(test_file)
+    assert len(_IMAGE_HASH_CACHE) == 1
+    key1 = next(iter(_IMAGE_HASH_CACHE.keys()))
+
+    # Append data to increase size and change content
+    with test_file.open("ab") as fh:
+        fh.write(b"-extended-data-with-new-size")
+
+    digest2 = get_cached_or_compute_image_hash(test_file)
+    assert digest1 != digest2
+    assert len(_IMAGE_HASH_CACHE) == 2
+    key2 = [k for k in _IMAGE_HASH_CACHE if k != key1][0]
+    assert key2[1] != key1[1]  # size is different
+
+
+def test_startup_logs_warning_when_evidence_root_writable(
+    tmp_path: Path,
+    audit_log_path: Path,
+) -> None:
+    """Server initialization must log a warning record in audit.jsonl if evidence_root is writable."""
+    writable_root = tmp_path / "writable_evidence"
+    writable_root.mkdir()
+
+    server = create_server(audit_log_path=audit_log_path, evidence_root=writable_root)
+    assert server is not None
+
+    lines = audit_log_path.read_text(encoding="utf-8").strip().splitlines()
+    assert len(lines) == 1
+    record = json.loads(lines[0])
+    assert record["tool"] == "server_startup"
+    assert record["status"] == "ok"
+    assert "warning" in record["outcome"]
+    assert "writable" in record["outcome"]["warning"]
+
 

@@ -33,6 +33,14 @@ forensic-mcp
 
 En el caso de estudio utilizado en el TFM, las evidencias corresponden a la imagen unificada `hacking-case.dd` (resultante de los segmentos `SCHARDT.001` a `SCHARDT.008` del *NIST CFReDS Hacking Case*), mantenida fuera del repositorio.
 
+El modo POSIX de solo lectura es verificable en el entorno de análisis (WSL/ext4) y constituye la tercera capa de protección, además del guardián en código y de la ausencia de rutas de escritura. En un sistema de ficheros montado a partir de Windows, el acceso por ACLs de dicho sistema no queda cubierto por esta capa, por lo que la evidencia de referencia se mantiene en ext4 para demostración.
+
+## Modelo de procedencia
+
+Cada resultado devuelto al cliente MCP incorpora un bloque de procedencia (`Provenance`) con seis campos obligatorios: `case_id`, `source_id`, `hash`, `inodo_ruta`, `timestamp_utc` y `rpc_call_id`.
+
+El campo `hash` contiene siempre el SHA-256 de la imagen forense como artefacto de origen, con el prefijo `sha256:`. Los hashes calculados sobre ficheros individuales dentro de la imagen quedan en el modelo de resultado de la operación (`HashResult`), nunca en el bloque de procedencia. El bloque tiene estructura y semántica idénticas en todas las herramientas.
+
 ## Instalación
 
 1. Crear el entorno virtual en la raíz del proyecto:
@@ -80,7 +88,7 @@ pytest -v
 - `src/forensic_mcp/tools/hashing.py`: cálculo y verificación de hashes MD5 y SHA-256 (RF1).
 - `src/forensic_mcp/tools/metadata.py`: extracción de metadados normalizados y listado paginado de directorios (RF2).
 - `src/forensic_mcp/server.py`: servidor `MCPServer` sobre `stdio`, exposición de herramientas (`hash_evidence_file`, `get_file_metadata`, `list_directory`) y captura controlada de errores.
-- `tests/`: *fixtures* sintéticas, salidas reales de TSK (`tests/fixtures/tsk/`) y pruebas automatizadas (24 pruebas).
+- `tests/`: *fixtures* sintéticas, salidas reales de TSK (`tests/fixtures/tsk/`) y pruebas automatizadas (27 pruebas).
 
 ## Contrato de seguridad
 

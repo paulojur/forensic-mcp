@@ -6,6 +6,25 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Pendiente
+
+- Herramienta de generación, filtrado y paginación de líneas temporales de eventos (RF3).
+- Herramienta de *parsing* estructurado de registros de autenticación, sistema y transferencias (RF4).
+- Herramienta de ejecución de *scripts* preaprobados mediante catálogo cerrado versionado (RF5).
+- Integración del agente de IA y desarrollo de la interfaz web de revisión.
+
+## [0.2.1] - 2026-11-12
+
+### Añadido
+
+- Clave de caché en memoria compuesta por ruta absoluta, tamaño en bytes y `mtime` en nanosegundos para evitar lecturas de procedencia obsoleta.
+- Pruebas unitarias de invalidación de caché ante modificaciones de `mtime` y tamaño de fichero.
+- Comprobación en arranque de si `FORENSIC_MCP_EVIDENCE_ROOT` tiene permisos de escritura, registrando advertencia en `audit.jsonl`.
+- Registro de decisión de arquitectura [ADR-003](docs/adr/003-procedencia-y-cache.md) (semántica de procedencia, caché compuesta y solo lectura en 3 capas).
+- Documentación explícita de la semántica del campo `hash` (SHA-256 de la imagen como artefacto de origen) en código y README.
+
+## [0.2.0] - 2026-11-12
+
 ### Añadido
 
 - Adaptador The Sleuth Kit (`TSKAdapter`) con ejecución segura (`subprocess` sin *shell*), control de *timeout* configurable y detección de binarios no instalados (`TSK_NOT_INSTALLED`, `TSK_TIMEOUT`).
@@ -13,14 +32,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - Herramienta MCP `get_file_metadata` (RF2) para extracción de metadados normalizados de inodo (MACB UTC, tamaños real y alocado, atributos/streams y *flags*) con bloque de procedencia de 6 campos.
 - Herramienta MCP `list_directory` (RF2) con listado paginado determinista (`limit`, `offset`) basado en `fls` no recursivo.
 - Salidas reales de TSK guardadas como texto en `tests/fixtures/tsk/` para pruebas de *parsing* desacopladas del entorno.
-- Pruebas unitarias de *parsers* y pruebas de integración contra la imagen real `hacking-case.dd` (totalizando 24 pruebas que pasan).
-
-### Pendiente
-
-- Herramienta de generación, filtrado y paginación de líneas temporales de eventos (RF3).
-- Herramienta de *parsing* estructurado de registros de autenticación, sistema y transferencias (RF4).
-- Herramienta de ejecución de *scripts* preaprobados mediante catálogo cerrado versionado (RF5).
-- Integración del agente de IA y desarrollo de la interfaz web de revisión.
+- Pruebas unitarias de *parsers* y pruebas de integración contra la imagen real `hacking-case.dd`.
 
 ## [0.1.0] - 2026-11-12
 
@@ -34,5 +46,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - Suite de 13 pruebas con `pytest`, incluyendo *fixture* `.dd` sintética, contraste con `sha256sum`, bloqueo de *sockets* y validación de errores estructurados.
 - Registros de decisiones de arquitectura [ADR-001](docs/adr/001-lectura-directa-de-la-imagen.md) (lectura directa) y [ADR-002](docs/adr/002-separacion-de-evidencia-y-codigo.md) (separación entre evidencia y código).
 
-[Unreleased]: https://github.com/paulojur/forensic-mcp/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/paulojur/forensic-mcp/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/paulojur/forensic-mcp/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/paulojur/forensic-mcp/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/paulojur/forensic-mcp/releases/tag/v0.1.0
