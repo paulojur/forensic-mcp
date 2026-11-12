@@ -44,6 +44,118 @@ class HashResult(BaseModel):
     verified: bool | None = None
 
 
+class PartitionEntry(BaseModel):
+    """Single partition entry from mmls."""
+
+    model_config = ConfigDict(frozen=True)
+
+    slot_number: str
+    slot_id: str
+    start_sector: int
+    end_sector: int
+    length_sectors: int
+    description: str
+    is_filesystem: bool
+
+
+class PartitionTable(BaseModel):
+    """Complete partition table from mmls."""
+
+    model_config = ConfigDict(frozen=True)
+
+    sector_size_bytes: int
+    partitions: list[PartitionEntry]
+    max_end_sector: int
+    declared_size_bytes: int
+
+
+class DirectoryEntry(BaseModel):
+    """Single file or directory entry from fls."""
+
+    model_config = ConfigDict(frozen=True)
+
+    file_type: str
+    is_deleted: bool
+    inode: str
+    name: str
+
+
+class DirectoryListing(BaseModel):
+    """Paginated directory listing from fls."""
+
+    model_config = ConfigDict(frozen=True)
+
+    dir_inode: str | None
+    partition_offset: int
+    total_entries: int
+    offset: int
+    limit: int
+    has_more: bool
+    next_offset: int | None
+    entries: list[DirectoryEntry]
+
+
+class DirectoryListingResult(BaseModel):
+    """MCP result for directory listing with provenance."""
+
+    model_config = ConfigDict(frozen=True)
+
+    provenance: Provenance
+    listing: DirectoryListing
+
+
+class MacbTimestamps(BaseModel):
+    """Normalized MACB timestamps in UTC."""
+
+    model_config = ConfigDict(frozen=True)
+
+    created_utc: str | None = None
+    file_modified_utc: str | None = None
+    mft_modified_utc: str | None = None
+    accessed_utc: str | None = None
+
+
+class InodeAttribute(BaseModel):
+    """Attribute or stream entry from istat."""
+
+    model_config = ConfigDict(frozen=True)
+
+    attr_type: str
+    name: str
+    resident: bool
+    size_bytes: int
+
+
+class InodeMetadata(BaseModel):
+    """Normalized metadata for a specific inode from istat."""
+
+    model_config = ConfigDict(frozen=True)
+
+    inode: str
+    entry_number: int | None = None
+    sequence: int | None = None
+    allocated: bool
+    is_directory: bool
+    links: int | None = None
+    names: list[str] = Field(default_factory=list)
+    flags: list[str] = Field(default_factory=list)
+    allocated_size_bytes: int | None = None
+    actual_size_bytes: int | None = None
+    parent_inode: int | None = None
+    standard_information_times: MacbTimestamps | None = None
+    file_name_times: MacbTimestamps | None = None
+    attributes: list[InodeAttribute] = Field(default_factory=list)
+
+
+class FileMetadataResult(BaseModel):
+    """MCP result for file metadata with provenance."""
+
+    model_config = ConfigDict(frozen=True)
+
+    provenance: Provenance
+    metadata: InodeMetadata
+
+
 class StructuredError(BaseModel):
     """Structured error payload returned to MCP clients (never raw tracebacks)."""
 

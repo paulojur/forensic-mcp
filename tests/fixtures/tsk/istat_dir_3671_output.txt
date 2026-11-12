@@ -1,0 +1,44 @@
+MFT Entry Header Values:
+Entry: 3671        Sequence: 1
+$LogFile Sequence Number: 37973836
+Allocated Directory
+Links: 2
+
+$STANDARD_INFORMATION Attribute Values:
+Flags: 
+Owner ID: 0
+Security ID: 0  ()
+Created:	2004-08-19 16:59:01.245516800 (UTC)
+File Modified:	2004-08-19 23:04:05.190769600 (UTC)
+MFT Modified:	2004-08-19 23:04:05.190769600 (UTC)
+Accessed:	2004-08-27 15:08:05.989331200 (UTC)
+
+$FILE_NAME Attribute Values:
+Flags: Directory
+Name: DOCUME~1
+Parent MFT Entry: 5 	Sequence: 5
+Allocated Size: 0   	Actual Size: 0
+Created:	2004-08-19 16:59:01.245516800 (UTC)
+File Modified:	2004-08-19 16:59:01.245516800 (UTC)
+MFT Modified:	2004-08-19 16:59:01.245516800 (UTC)
+Accessed:	2004-08-19 16:59:01.245516800 (UTC)
+
+$FILE_NAME Attribute Values:
+Flags: Directory
+Name: Documents and Settings
+Parent MFT Entry: 5 	Sequence: 5
+Allocated Size: 0   	Actual Size: 0
+Created:	2004-08-19 16:59:01.245516800 (UTC)
+File Modified:	2004-08-19 16:59:01.245516800 (UTC)
+MFT Modified:	2004-08-19 16:59:01.245516800 (UTC)
+Accessed:	2004-08-19 16:59:01.245516800 (UTC)
+
+Attributes: 
+Type: $STANDARD_INFORMATION (16-0)   Name: N/A   Resident   size: 72
+Type: $FILE_NAME (48-3)   Name: N/A   Resident   size: 82
+Type: $FILE_NAME (48-2)   Name: N/A   Resident   size: 110
+Type: $SECURITY_DESCRIPTOR (80-4)   Name: N/A   Resident   size: 280
+Type: $INDEX_ROOT (144-7)   Name: $I30   Resident   size: 56
+Type: $INDEX_ALLOCATION (160-5)   Name: $I30   Non-Resident   size: 4096  init_size: 4096
+5141141 5141142 5141143 5141144 5141145 5141146 5141147 5141148 
+Type: $BITMAP (176-6)   Name: $I30   Resident   size: 8

@@ -6,12 +6,20 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ## [Unreleased]
 
+### Añadido
+
+- Adaptador The Sleuth Kit (`TSKAdapter`) con ejecución segura (`subprocess` sin *shell*), control de *timeout* configurable y detección de binarios no instalados (`TSK_NOT_INSTALLED`, `TSK_TIMEOUT`).
+- Validación de integridad de geometría MBR en `mmls` (`IMAGE_GEOMETRY_TRUNCATED`) para detectar imágenes truncadas o incompletas frente al tamaño real del fichero.
+- Herramienta MCP `get_file_metadata` (RF2) para extracción de metadados normalizados de inodo (MACB UTC, tamaños real y alocado, atributos/streams y *flags*) con bloque de procedencia de 6 campos.
+- Herramienta MCP `list_directory` (RF2) con listado paginado determinista (`limit`, `offset`) basado en `fls` no recursivo.
+- Salidas reales de TSK guardadas como texto en `tests/fixtures/tsk/` para pruebas de *parsing* desacopladas del entorno.
+- Pruebas unitarias de *parsers* y pruebas de integración contra la imagen real `hacking-case.dd` (totalizando 24 pruebas que pasan).
+
 ### Pendiente
 
-- Herramienta de extracción de metadatos normalizados del sistema de ficheros.
-- Herramienta de generación, filtrado y paginación de líneas temporales de eventos.
-- Herramienta de *parsing* estructurado de registros de autenticación, sistema y transferencias.
-- Herramienta de ejecución de *scripts* preaprobados mediante catálogo cerrado versionado.
+- Herramienta de generación, filtrado y paginación de líneas temporales de eventos (RF3).
+- Herramienta de *parsing* estructurado de registros de autenticación, sistema y transferencias (RF4).
+- Herramienta de ejecución de *scripts* preaprobados mediante catálogo cerrado versionado (RF5).
 - Integración del agente de IA y desarrollo de la interfaz web de revisión.
 
 ## [0.1.0] - 2026-11-12

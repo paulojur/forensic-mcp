@@ -10,8 +10,8 @@ Impone un contrato de seguridad verificable en código sobre la evidencia y adju
 
 Versión actual: `v0.1.0`.
 
-- Implementado: servidor MCP sobre transporte `stdio`, modelo central de procedencia (`Provenance`), guardián de lectura exclusiva (`open_evidence_readonly`), registro de auditoría JSONL *append-only*, suite de verificación del contrato de seguridad y la primera herramienta funcional (`hash_evidence_file` para cálculo y verificación de hashes MD5 y SHA-256).
-- No existe todavía en esta versión: las otras cuatro herramientas forenses previstas (extracción de metadatos, generación y consulta de líneas temporales, *parsing* de registros y ejecución de *scripts* preaprobados), el adaptador de The Sleuth Kit para ficheros internos de una imagen, la integración con el agente de IA, la interfaz web de revisión y el empaquetado en Docker.
+- Implementado: servidor MCP sobre transporte `stdio`, modelo central de procedencia (`Provenance`), guardián de lectura exclusiva (`open_evidence_readonly`), registro de auditoría JSONL *append-only*, suite de verificación del contrato de seguridad, herramienta `hash_evidence_file` (RF1), adaptador de The Sleuth Kit (`TSKAdapter` con validación de geometría del MBR y control de *timeout*) y herramientas de metadados normalizados `get_file_metadata` y listado paginado `list_directory` (RF2).
+- No existe todavía en esta versión: las tres herramientas forenses restantes (generación y consulta de líneas temporales, *parsing* de registros y ejecución de *scripts* preaprobados), la integración con el agente de IA, la interfaz web de revisión y el empaquetado en Docker.
 
 ## Requisitos
 
@@ -31,7 +31,7 @@ export FORENSIC_MCP_EVIDENCE_ROOT=/ruta/a/evidence
 forensic-mcp
 ```
 
-En el caso de estudio utilizado en el TFM, las evidencias corresponden a los segmentos `SCHARDT.001` a `SCHARDT.005` del *NIST CFReDS Hacking Case*, mantenidos fuera del repositorio.
+En el caso de estudio utilizado en el TFM, las evidencias corresponden a la imagen unificada `hacking-case.dd` (resultante de los segmentos `SCHARDT.001` a `SCHARDT.008` del *NIST CFReDS Hacking Case*), mantenida fuera del repositorio.
 
 ## Instalación
 
@@ -73,12 +73,14 @@ pytest -v
 - `README.md`: documentación principal del repositorio.
 - `CHANGELOG.md`: historial de cambios y elementos pendientes por versión.
 - `docs/adr/`: registros de decisiones de arquitectura (ADR).
-- `src/forensic_mcp/models.py`: modelos Pydantic de procedencia (`Provenance`), resultado de hashes (`HashResult`) y errores estructurados (`StructuredError`).
+- `src/forensic_mcp/models.py`: modelos Pydantic de procedencia (`Provenance`), hashes (`HashResult`), metadados de inodo (`FileMetadataResult`), listado de directorios (`DirectoryListingResult`) y errores estructurados (`StructuredError`).
 - `src/forensic_mcp/evidence.py`: guardián de acceso de solo lectura (`open_evidence_readonly`) y confinamiento de rutas (`resolve_evidence_path`).
 - `src/forensic_mcp/audit.py`: registrador de auditoría JSONL *append-only* aislado del directorio de evidencias.
-- `src/forensic_mcp/tools/hashing.py`: implementación de cálculo y verificación de hashes MD5 y SHA-256 en modo lectura.
-- `src/forensic_mcp/server.py`: servidor `MCPServer` sobre `stdio`, exposición de `hash_evidence_file` y captura controlada de errores.
-- `tests/`: *fixtures* sintéticas y pruebas automatizadas de hashing y del contrato de seguridad.
+- `src/forensic_mcp/adapters/tsk.py`: adaptador de The Sleuth Kit (`mmls`, `fls`, `istat`) con verificación de geometría MBR, timeouts y *parsers* de texto.
+- `src/forensic_mcp/tools/hashing.py`: cálculo y verificación de hashes MD5 y SHA-256 (RF1).
+- `src/forensic_mcp/tools/metadata.py`: extracción de metadados normalizados y listado paginado de directorios (RF2).
+- `src/forensic_mcp/server.py`: servidor `MCPServer` sobre `stdio`, exposición de herramientas (`hash_evidence_file`, `get_file_metadata`, `list_directory`) y captura controlada de errores.
+- `tests/`: *fixtures* sintéticas, salidas reales de TSK (`tests/fixtures/tsk/`) y pruebas automatizadas (24 pruebas).
 
 ## Contrato de seguridad
 

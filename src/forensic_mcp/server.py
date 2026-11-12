@@ -8,21 +8,26 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
+from forensic_mcp.adapters.tsk import TSKAdapter
 from forensic_mcp.audit import AuditLogger
 from forensic_mcp.evidence import resolve_evidence_path
 from forensic_mcp.models import (
+    DirectoryListingResult,
+    FileMetadataResult,
     ForensicToolError,
     HashResult,
     StructuredError,
     new_rpc_call_id,
 )
 from forensic_mcp.tools.hashing import compute_file_hashes
+from forensic_mcp.tools.metadata import extract_inode_metadata, list_image_directory
 
 
 def create_server(
     *,
     audit_log_path: Path | None = None,
     evidence_root: Path | None = None,
+    tsk_adapter: TSKAdapter | None = None,
 ) -> MCPServer:
     """Create and configure the Forensic MCPServer instance."""
     resolved_audit = audit_log_path or Path(
@@ -32,6 +37,8 @@ def create_server(
     resolved_root = evidence_root or (Path(env_root) if env_root else None)
 
     audit = AuditLogger(resolved_audit, evidence_root=resolved_root)
+    adapter = tsk_adapter or TSKAdapter()
+
     server = MCPServer(
         name="forensic-mcp",
         title="Forensic Read-Only MCP Server",
@@ -110,6 +117,168 @@ def create_server(
         )
         return result
 
+    @server.tool(
+        description=(
+            "Extract normalized metadata for an inode in a disk image (MACB UTC timestamps, "
+            "actual and allocated sizes, flags, attributes/streams) with 6-field provenance."
+        )
+    )
+    def get_file_metadata(
+        image_path: str,
+        case_id: str,
+        source_id: str,
+        inode: str,
+        partition_offset: int | None = None,
+        source_hash: str | None = None,
+    ) -> FileMetadataResult:
+        """Extract metadata for a specific filesystem inode."""
+        rpc_call_id = new_rpc_call_id()
+        params = {
+            "image_path": image_path,
+            "case_id": case_id,
+            "source_id": source_id,
+            "inode": inode,
+            "partition_offset": partition_offset,
+            "source_hash": source_hash,
+        }
+        try:
+            target = resolve_evidence_path(
+                Path(image_path),
+                evidence_root=resolved_root,
+                rpc_call_id=rpc_call_id,
+            )
+            result = extract_inode_metadata(
+                target,
+                case_id=case_id,
+                source_id=source_id,
+                inode=inode,
+                partition_offset=partition_offset,
+                source_hash=source_hash,
+                tsk_adapter=adapter,
+                rpc_call_id=rpc_call_id,
+            )
+        except ForensicToolError as exc:
+            err = StructuredError(
+                code=exc.code,
+                message=exc.message,
+                rpc_call_id=rpc_call_id,
+            )
+            audit.log(
+                rpc_call_id=rpc_call_id,
+                tool="get_file_metadata",
+                params=params,
+                status="error",
+                outcome=err.model_dump(),
+            )
+            raise ToolError(err.model_dump_json()) from None
+        except Exception:
+            err = StructuredError(
+                code="INTERNAL_ERROR",
+                message="Unexpected internal error while extracting inode metadata.",
+                rpc_call_id=rpc_call_id,
+            )
+            audit.log(
+                rpc_call_id=rpc_call_id,
+                tool="get_file_metadata",
+                params=params,
+                status="error",
+                outcome=err.model_dump(),
+            )
+            raise ToolError(err.model_dump_json()) from None
+
+        audit.log(
+            rpc_call_id=rpc_call_id,
+            tool="get_file_metadata",
+            params=params,
+            status="ok",
+            outcome=result.model_dump(),
+        )
+        return result
+
+    @server.tool(
+        description=(
+            "List files and directories in a disk image using fls with deterministic pagination "
+            "(limit and offset) and 6-field provenance."
+        )
+    )
+    def list_directory(
+        image_path: str,
+        case_id: str,
+        source_id: str,
+        dir_inode: str | None = None,
+        partition_offset: int | None = None,
+        limit: int = 50,
+        offset: int = 0,
+        source_hash: str | None = None,
+    ) -> DirectoryListingResult:
+        """List directory contents within a disk image with pagination."""
+        rpc_call_id = new_rpc_call_id()
+        params = {
+            "image_path": image_path,
+            "case_id": case_id,
+            "source_id": source_id,
+            "dir_inode": dir_inode,
+            "partition_offset": partition_offset,
+            "limit": limit,
+            "offset": offset,
+            "source_hash": source_hash,
+        }
+        try:
+            target = resolve_evidence_path(
+                Path(image_path),
+                evidence_root=resolved_root,
+                rpc_call_id=rpc_call_id,
+            )
+            result = list_image_directory(
+                target,
+                case_id=case_id,
+                source_id=source_id,
+                dir_inode=dir_inode,
+                partition_offset=partition_offset,
+                limit=limit,
+                offset=offset,
+                source_hash=source_hash,
+                tsk_adapter=adapter,
+                rpc_call_id=rpc_call_id,
+            )
+        except ForensicToolError as exc:
+            err = StructuredError(
+                code=exc.code,
+                message=exc.message,
+                rpc_call_id=rpc_call_id,
+            )
+            audit.log(
+                rpc_call_id=rpc_call_id,
+                tool="list_directory",
+                params=params,
+                status="error",
+                outcome=err.model_dump(),
+            )
+            raise ToolError(err.model_dump_json()) from None
+        except Exception:
+            err = StructuredError(
+                code="INTERNAL_ERROR",
+                message="Unexpected internal error while listing directory entries.",
+                rpc_call_id=rpc_call_id,
+            )
+            audit.log(
+                rpc_call_id=rpc_call_id,
+                tool="list_directory",
+                params=params,
+                status="error",
+                outcome=err.model_dump(),
+            )
+            raise ToolError(err.model_dump_json()) from None
+
+        audit.log(
+            rpc_call_id=rpc_call_id,
+            tool="list_directory",
+            params=params,
+            status="ok",
+            outcome=result.model_dump(),
+        )
+        return result
+
     return server
 
 
@@ -121,4 +290,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
