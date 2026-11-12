@@ -1,6 +1,4 @@
-# Entornos virtuales y compilación Python
-.venv/
-venv/
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -9,20 +7,27 @@ __pycache__/
 build/
 dist/
 
-# Cachés de pruebas y herramientas
+# Entornos virtuales
+.venv/
+venv/
+
+# Pruebas
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Evidencias forenses y registros de auditoría (nunca versionar)
+# Evidencia forense (nunca se versiona y debe residir fuera del repositorio)
 *.dd
 *.raw
 *.e01
 *.E01
 *.img
-*.0[0-9][0-9]
 SCHARDT.*
 audit.jsonl
 audit/
 evidence/
 evidences/
+
+# Red de seguridad para fixtures de prueba
+!tests/fixtures/**
+!tests/**/*.dd

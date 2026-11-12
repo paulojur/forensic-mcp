@@ -20,6 +20,19 @@ Versión actual: `v0.1.0`.
 
 Windows nativo no se soporta en esta fase porque la verificación de hashes contra la utilidad estándar del sistema (`sha256sum`) y las futuras herramientas forenses de línea de comandos (The Sleuth Kit) dependen de un entorno POSIX.
 
+## Evidencias forenses
+
+Las imágenes forenses no forman parte del repositorio ni deben almacenarse dentro de él. Se mantienen en un directorio externo indicado mediante la variable de entorno `FORENSIC_MCP_EVIDENCE_ROOT`, y el servidor confina todos los accesos a esa raíz rechazando cualquier ruta externa.
+
+Ejemplo de configuración antes de arrancar el servidor:
+
+```bash
+export FORENSIC_MCP_EVIDENCE_ROOT=/ruta/a/evidence
+forensic-mcp
+```
+
+En el caso de estudio utilizado en el TFM, las evidencias corresponden a los segmentos `SCHARDT.001` a `SCHARDT.005` del *NIST CFReDS Hacking Case*, mantenidos fuera del repositorio.
+
 ## Instalación
 
 1. Crear el entorno virtual en la raíz del proyecto:
@@ -76,7 +89,9 @@ pytest -v
 
 ## Licencia y citación
 
-Distribuido bajo licencia MIT; consúltese el fichero [LICENSE](LICENSE).
+El código de este repositorio se distribuye bajo licencia MIT; consúltese el fichero [LICENSE](LICENSE).
 
 Para citar este trabajo en contexto académico, remítase a la memoria del Trabajo Final de Máster: *MCP Server para la Automatización de Análisis Forense asistido por IA mediante agentes agénticos*, Paulo Ricardo de Oliveira, Máster Universitario en Ciberseguridad y Privacidad, Universitat Oberta de Catalunya (UOC), 2026–2027.
+
+La memoria del Trabajo Final de Máster se distribuye bajo la licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 3.0 España, conforme a la plantilla de la Universitat Oberta de Catalunya.
 

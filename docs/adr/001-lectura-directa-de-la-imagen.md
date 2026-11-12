@@ -7,6 +7,8 @@
 
 En la memoria de diseño (PEC2, sección 2.3) se describía inicialmente que la imagen forense se montaría en modo de solo lectura en el sistema operativo para que el servidor MCP operase sobre ella. Sin embargo, el requisito no funcional RNF3 exige portabilidad entre Linux y Windows, y la implementación inicial se desarrolla en un entorno Windows 11 con WSL2 (Ubuntu).
 
+Tras este análisis, la sección 2.3 de la memoria se actualizó para reflejar la lectura directa, de modo que el diseño documentado y el código implementado coinciden.
+
 ## Problema
 
 Montar una imagen de disco en bruto (`.dd`) a nivel de sistema operativo presenta dos inconvenientes técnicos graves:
