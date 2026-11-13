@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from typing import Literal
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -170,6 +171,35 @@ class FileMetadataResult(BaseModel):
 
     provenance: Provenance
     metadata: InodeMetadata
+
+
+class TimelineEvent(BaseModel):
+    """Normalized forensic timeline event."""
+
+    model_config = ConfigDict(frozen=True)
+
+    timestamp_utc: str = Field(..., description="ISO-8601 UTC timestamp")
+    tag: Literal["atime", "mtime", "ctime", "crtime"] = Field(
+        ..., description="Timestamp type: atime, mtime, ctime, or crtime"
+    )
+    file_path: str = Field(..., description="Full path of the file or directory")
+    inode: str = Field(..., description="Filesystem inode / MFT entry")
+    size_bytes: int = Field(..., ge=0, description="Size in bytes")
+    is_allocated: bool = Field(..., description="True if allocated, False if deleted/unallocated")
+    provenance: Provenance = Field(..., description="Provenance block for this timeline event")
+
+
+class TimelineResult(BaseModel):
+    """Paginated result for build_timeline tool."""
+
+    model_config = ConfigDict(frozen=True)
+
+    total_matching: int = Field(..., ge=0, description="Total events matching filters")
+    offset: int = Field(..., ge=0, description="Current page offset")
+    limit: int = Field(..., ge=1, description="Page limit")
+    has_more: bool = Field(..., description="True if subsequent events exist")
+    next_offset: int | None = Field(None, description="Next offset cursor if has_more is True")
+    events: list[TimelineEvent] = Field(default_factory=list, description="Page of timeline events")
 
 
 class StructuredError(BaseModel):

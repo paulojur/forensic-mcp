@@ -1,0 +1,64 @@
+0|/Documents and Settings ($FILE_NAME)|3671-48-2|d/drwxrwxrwx|0|0|110|1092934741|1092934741|1092934741|1092934741
+0|/Documents and Settings|3671-144-7|d/drwxrwxrwx|0|0|56|1093619285|1092956645|1092956645|1092934741
+0|/Documents and Settings/All Users ($FILE_NAME)|3673-48-2|d/drwxrwxrwx|0|0|84|1092934741|1092934741|1092934741|1092934741
+0|/Documents and Settings/All Users|3673-144-7|d/drwxrwxrwx|0|0|56|1093619286|1092954817|1092954817|1092934741
+0|/Documents and Settings/All Users/Application Data ($FILE_NAME)|3707-48-2|d/d--x--x--x|0|0|98|1092934769|1092934769|1092934769|1092934769
+0|/Documents and Settings/All Users/Application Data|3707-144-7|d/d--x--x--x|0|0|56|1093619807|1092934809|1092934809|1092934769
+0|/Documents and Settings/All Users/Application Data/desktop.ini ($FILE_NAME)|3800-48-2|r/rr-xr-xr-x|0|0|88|1092934809|1092934809|1092934809|1092934809
+0|/Documents and Settings/All Users/Application Data/desktop.ini|3800-128-1|r/rr-xr-xr-x|0|0|62|1093620583|1092934809|1092934809|1092934809
+0|/Documents and Settings/All Users/Application Data/Microsoft ($FILE_NAME)|3708-48-2|d/drwxrwxrwx|0|0|84|1092934769|1092934769|1092934769|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft|3708-144-7|d/drwxrwxrwx|0|0|56|1093621576|1093015544|1093015544|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto ($FILE_NAME)|3709-48-2|d/drwxrwxrwx|0|0|78|1092934769|1092934769|1092934769|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto|3709-144-1|d/drwxrwxrwx|0|0|224|1093015078|1092934770|1092934770|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/DSS ($FILE_NAME)|3712-48-2|d/drwxrwxrwx|0|0|72|1092934770|1092934770|1092934770|1092934770
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/DSS|3712-144-1|d/drwxrwxrwx|0|0|256|1093015078|1092934770|1092934770|1092934770
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/DSS/MachineKeys ($FILE_NAME)|3713-48-2|d/drwxrwxrwx|0|0|88|1092934770|1092934770|1092934770|1092934770
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/DSS/MachineKeys|3713-144-1|d/drwxrwxrwx|0|0|48|1093015078|1092934770|1092934770|1092934770
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/RSA ($FILE_NAME)|3710-48-2|d/drwxrwxrwx|0|0|72|1092934769|1092934769|1092934769|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/RSA|3710-144-1|d/drwxrwxrwx|0|0|256|1093015078|1092934769|1092934769|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/RSA/MachineKeys ($FILE_NAME)|3711-48-2|d/drwxrwxrwx|0|0|88|1092934769|1092934769|1092934769|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft/Crypto/RSA/MachineKeys|3711-144-1|d/drwxrwxrwx|0|0|48|1093015078|1092934769|1092934769|1092934769
+0|/Documents and Settings/All Users/Application Data/Microsoft/Dr Watson ($FILE_NAME)|10977-48-2|d/drwxrwxrwx|0|0|84|1093015544|1093015544|1093015544|1093015544
+0|/Documents and Settings/All Users/Application Data/Microsoft/Dr Watson|10977-144-1|d/drwxrwxrwx|0|0|264|1093015548|1093015548|1093015548|1093015544
+0|/Documents and Settings/All Users/Application Data/Microsoft/Dr Watson/drwtsn32.log ($FILE_NAME)|10979-48-2|r/rrwxrwxrwx|0|0|90|1093015545|1093015545|1093015545|1093015545
+0|/Documents and Settings/All Users/Application Data/Microsoft/Dr Watson/drwtsn32.log|10979-128-3|r/rrwxrwxrwx|0|0|37044|1093015548|1093015548|1093015548|1093015545
+0|/Documents and Settings/All Users/Application Data/Microsoft/Dr Watson/user.dmp ($FILE_NAME)|10980-48-2|r/rrwxrwxrwx|0|0|82|1093015548|1093015548|1093015548|1093015548
+0|/Documents and Settings/All Users/Application Data/Microsoft/Dr Watson/user.dmp|10980-128-3|r/rrwxrwxrwx|0|0|20023|1093015548|1093015548|1093015548|1093015548
+0|/Documents and Settings/All Users/Application Data/Microsoft/HTML Help ($FILE_NAME)|7325-48-2|d/drwxrwxrwx|0|0|84|1092955220|1092955220|1092955220|1092955220
+0|/Documents and Settings/All Users/Application Data/Microsoft/HTML Help|7325-144-1|d/drwxrwxrwx|0|0|48|1093015078|1092955220|1092955220|1092955220
+0|/Documents and Settings/All Users/Application Data/Microsoft/Media Index ($FILE_NAME)|7287-48-2|d/drwxrwxrwx|0|0|88|1092955087|1092955087|1092955087|1092955087
+0|/Documents and Settings/All Users/Application Data/Microsoft/Media Index|7287-144-7|d/drwxrwxrwx|0|0|56|1093015078|1092956674|1092956674|1092955087
+0|/Documents and Settings/All Users/Application Data/Microsoft/Media Index/wmplibrary_v_0_12.db ($FILE_NAME)|6074-48-2|r/rrwxrwxrwx|0|0|106|1092955097|1092955097|1092955097|1092955097
+0|/Documents and Settings/All Users/Application Data/Microsoft/Media Index/wmplibrary_v_0_12.db|6074-128-5|r/rrwxrwxrwx|0|0|245760|1092956674|1092956674|1092956676|1092955097
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network ($FILE_NAME)|4759-48-2|d/drwxrwxrwx|0|0|80|1092954009|1092954009|1092954009|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network|4759-144-1|d/drwxrwxrwx|0|0|256|1093015078|1092954009|1092954009|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections ($FILE_NAME)|4762-48-2|d/drwxrwxrwx|0|0|88|1092954009|1092954009|1092954009|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections|4762-144-1|d/drwxrwxrwx|0|0|136|1093015078|1092954009|1092954009|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections/Pbk ($FILE_NAME)|4763-48-2|d/drwxrwxrwx|0|0|72|1092954009|1092954009|1092954009|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections/Pbk|4763-144-1|d/drwxrwxrwx|0|0|392|1093621366|1093015540|1093015540|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections/Pbk/rasphone.pbk ($FILE_NAME)|10982-48-2|r/rrwxrwxrwx|0|0|90|1093015540|1093015540|1093015540|1093015540
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections/Pbk/rasphone.pbk|10982-128-1|r/rrwxrwxrwx|0|0|0|1093015540|1093015540|1093015540|1093015540
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections/Pbk/sharedaccess.ini ($FILE_NAME)|4765-48-5|r/rrwxrwxrwx|0|0|98|1092954009|995743470|1092954009|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/Network/Connections/Pbk/sharedaccess.ini|4765-128-4|r/rrwxrwxrwx|0|0|853|1092954009|995743470|1092954009|1092954009
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures ($FILE_NAME)|5663-48-2|d/drwxrwxrwx|0|0|108|1092954575|1092954575|1092954575|1092954575
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures|5663-144-7|d/drwxrwxrwx|0|0|56|1093621576|1092956701|1092956701|1092954575
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures ($FILE_NAME)|5664-48-2|d/drwxrwxrwx|0|0|98|1092954575|1092954575|1092954575|1092954575
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures|5664-144-7|d/drwxrwxrwx|0|0|56|1093015078|1092954579|1092954579|1092954575
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/airplane.bmp ($FILE_NAME)|5665-48-5|r/rrwxrwxrwx|0|0|90|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/airplane.bmp|5665-128-4|r/rrwxrwxrwx|0|0|6968|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/astronaut.bmp ($FILE_NAME)|5666-48-5|r/rrwxrwxrwx|0|0|92|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/astronaut.bmp|5666-128-4|r/rrwxrwxrwx|0|0|6968|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/ball.bmp ($FILE_NAME)|5667-48-5|r/rrwxrwxrwx|0|0|82|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/ball.bmp|5667-128-4|r/rrwxrwxrwx|0|0|6968|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/beach.bmp ($FILE_NAME)|5674-48-5|r/rrwxrwxrwx|0|0|84|1092954577|998589600|1092954577|1092954577
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/beach.bmp|5674-128-4|r/rrwxrwxrwx|0|0|6968|1092954577|998589600|1092954577|1092954577
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/butterfly.bmp ($FILE_NAME)|5668-48-5|r/rrwxrwxrwx|0|0|92|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/butterfly.bmp|5668-128-4|r/rrwxrwxrwx|0|0|6968|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/car.bmp ($FILE_NAME)|5675-48-5|r/rrwxrwxrwx|0|0|80|1092954577|998589600|1092954577|1092954577
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/car.bmp|5675-128-4|r/rrwxrwxrwx|0|0|6968|1092954577|998589600|1092954577|1092954577
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/cat.bmp ($FILE_NAME)|5669-48-5|r/rrwxrwxrwx|0|0|80|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/All Users/Application Data/Microsoft/User Account Pictures/Default Pictures/cat.bmp|5669-128-4|r/rrwxrwxrwx|0|0|6968|1092954576|998589600|1092954576|1092954576
+0|/Documents and Settings/Default User/MPC7A4.tmp (deleted)|0|r/----------|0|0|0|0|0|0|0
+0|/Documents and Settings/Mr. Evil/evil|script.bat|5001-128-1|r/rrwxrwxrwx|0|0|1024|1092956645|1092956645|1092956645|1092956645
+0|/Documents and Settings/Mr. Evil/tie_file_b.txt|5003-128-1|r/rrwxrwxrwx|0|0|512|1092956645|1092956645|1092956645|1092956645
+0|/Documents and Settings/Mr. Evil/tie_file_a.txt|5002-128-1|r/rrwxrwxrwx|0|0|512|1092956645|1092956645|1092956645|1092956645

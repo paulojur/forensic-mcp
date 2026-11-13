@@ -6,7 +6,7 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Sequence
+from typing import Iterator, Sequence
 
 from forensic_mcp.evidence import open_evidence_readonly
 from forensic_mcp.models import (
@@ -450,4 +450,79 @@ class TSKAdapter:
             rpc_call_id=rpc_call_id,
         )
         return parse_istat_output(stdout, inode=str(inode))
+
+    def stream_bodyfile(
+        self,
+        image_path: Path,
+        *,
+        partition_offset: int,
+        mount_point: str = "/",
+        rpc_call_id: str = "",
+    ) -> Iterator[str]:
+        """Stream raw bodyfile lines from fls -m <mount_point> -o <offset> -r <image>."""
+        with open_evidence_readonly(image_path, "rb", rpc_call_id=rpc_call_id):
+            pass
+
+        if shutil.which(self.fls_cmd) is None:
+            raise ForensicToolError(
+                code="TSK_NOT_INSTALLED",
+                message=f"The Sleuth Kit binary '{self.fls_cmd}' was not found in system PATH.",
+                rpc_call_id=rpc_call_id,
+            )
+
+        cmd = [
+            self.fls_cmd,
+            "-m",
+            mount_point,
+            "-o",
+            str(partition_offset),
+            "-r",
+            str(image_path),
+        ]
+
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                errors="replace",
+            )
+        except FileNotFoundError:
+            raise ForensicToolError(
+                code="TSK_NOT_INSTALLED",
+                message=f"The Sleuth Kit binary '{self.fls_cmd}' was not found.",
+                rpc_call_id=rpc_call_id,
+            ) from None
+        except Exception as exc:
+            raise ForensicToolError(
+                code="TSK_EXECUTION_ERROR",
+                message=f"Unexpected error executing '{self.fls_cmd}': {exc}",
+                rpc_call_id=rpc_call_id,
+            ) from exc
+
+        assert proc.stdout is not None
+        try:
+            for line in proc.stdout:
+                yield line
+        finally:
+            proc.stdout.close()
+            try:
+                proc.wait(timeout=self.timeout_seconds)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait()
+                raise ForensicToolError(
+                    code="TSK_TIMEOUT",
+                    message=f"Execution of '{self.fls_cmd}' timed out after {self.timeout_seconds} seconds.",
+                    rpc_call_id=rpc_call_id,
+                )
+
+        if proc.returncode != 0:
+            err = proc.stderr.read().strip() if proc.stderr else ""
+            raise ForensicToolError(
+                code="TSK_EXECUTION_ERROR",
+                message=f"TSK command '{self.fls_cmd}' failed with returncode {proc.returncode}: {err}",
+                rpc_call_id=rpc_call_id,
+            )
 

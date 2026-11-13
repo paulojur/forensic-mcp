@@ -17,10 +17,12 @@ from forensic_mcp.models import (
     ForensicToolError,
     HashResult,
     StructuredError,
+    TimelineResult,
     new_rpc_call_id,
 )
 from forensic_mcp.tools.hashing import compute_file_hashes
 from forensic_mcp.tools.metadata import extract_inode_metadata, list_image_directory
+from forensic_mcp.tools.timeline import build_timeline as execute_build_timeline
 
 
 def create_server(
@@ -288,6 +290,102 @@ def create_server(
         audit.log(
             rpc_call_id=rpc_call_id,
             tool="list_directory",
+            params=params,
+            status="ok",
+            outcome=result.model_dump(),
+        )
+        return result
+
+    @server.tool(
+        description=(
+            "Generate, filter, and paginate a forensic timeline from disk image filesystem metadata "
+            "(MACB bodyfile) with deterministic chronological sorting and 6-field provenance."
+        )
+    )
+    def build_timeline(
+        image_path: str,
+        case_id: str,
+        source_id: str,
+        partition_offset: int | None = None,
+        start_time_utc: str | None = None,
+        end_time_utc: str | None = None,
+        path_prefix: str | None = None,
+        tag: str | None = None,
+        include_deleted: bool = True,
+        limit: int = 100,
+        offset: int = 0,
+        source_hash: str | None = None,
+    ) -> TimelineResult:
+        """Build and filter a forensic timeline from the disk image in stream."""
+        rpc_call_id = new_rpc_call_id()
+        params = {
+            "image_path": image_path,
+            "case_id": case_id,
+            "source_id": source_id,
+            "partition_offset": partition_offset,
+            "start_time_utc": start_time_utc,
+            "end_time_utc": end_time_utc,
+            "path_prefix": path_prefix,
+            "tag": tag,
+            "include_deleted": include_deleted,
+            "limit": limit,
+            "offset": offset,
+            "source_hash": source_hash,
+        }
+        try:
+            target = resolve_evidence_path(
+                Path(image_path),
+                evidence_root=resolved_root,
+                rpc_call_id=rpc_call_id,
+            )
+            result = execute_build_timeline(
+                target,
+                case_id=case_id,
+                source_id=source_id,
+                partition_offset=partition_offset,
+                start_time_utc=start_time_utc,
+                end_time_utc=end_time_utc,
+                path_prefix=path_prefix,
+                tag=tag,
+                include_deleted=include_deleted,
+                limit=limit,
+                offset=offset,
+                source_hash=source_hash,
+                tsk_adapter=adapter,
+                rpc_call_id=rpc_call_id,
+            )
+        except ForensicToolError as exc:
+            err = StructuredError(
+                code=exc.code,
+                message=exc.message,
+                rpc_call_id=rpc_call_id,
+            )
+            audit.log(
+                rpc_call_id=rpc_call_id,
+                tool="build_timeline",
+                params=params,
+                status="error",
+                outcome=err.model_dump(),
+            )
+            raise ToolError(err.model_dump_json()) from None
+        except Exception:
+            err = StructuredError(
+                code="INTERNAL_ERROR",
+                message="Unexpected internal error while generating timeline.",
+                rpc_call_id=rpc_call_id,
+            )
+            audit.log(
+                rpc_call_id=rpc_call_id,
+                tool="build_timeline",
+                params=params,
+                status="error",
+                outcome=err.model_dump(),
+            )
+            raise ToolError(err.model_dump_json()) from None
+
+        audit.log(
+            rpc_call_id=rpc_call_id,
+            tool="build_timeline",
             params=params,
             status="ok",
             outcome=result.model_dump(),

@@ -8,10 +8,10 @@ Impone un contrato de seguridad verificable en código sobre la evidencia y adju
 
 ## Estado actual
 
-Versión actual: `v0.1.0`.
+Versión actual: `v0.3.0`.
 
-- Implementado: servidor MCP sobre transporte `stdio`, modelo central de procedencia (`Provenance`), guardián de lectura exclusiva (`open_evidence_readonly`), registro de auditoría JSONL *append-only*, suite de verificación del contrato de seguridad, herramienta `hash_evidence_file` (RF1), adaptador de The Sleuth Kit (`TSKAdapter` con validación de geometría del MBR y control de *timeout*) y herramientas de metadados normalizados `get_file_metadata` y listado paginado `list_directory` (RF2).
-- No existe todavía en esta versión: las tres herramientas forenses restantes (generación y consulta de líneas temporales, *parsing* de registros y ejecución de *scripts* preaprobados), la integración con el agente de IA, la interfaz web de revisión y el empaquetado en Docker.
+- Implementado: servidor MCP sobre transporte `stdio`, modelo central de procedencia (`Provenance`), guardián de lectura exclusiva (`open_evidence_readonly`), registro de auditoría JSONL *append-only*, suite de verificación del contrato de seguridad, herramienta `hash_evidence_file` (RF1), adaptador de The Sleuth Kit (`TSKAdapter` con validación de geometría del MBR y control de *timeout*), herramientas de metadados normalizados `get_file_metadata` y listado paginado `list_directory` (RF2), y herramienta de generación, filtrado y paginación en flujo de líneas temporales forenses `build_timeline` (RF3).
+- No existe todavía en esta versión: las dos herramientas forenses restantes (*parsing* de registros y ejecución de *scripts* preaprobados), la integración con el agente de IA, la interfaz web de revisión y el empaquetado en Docker.
 
 ## Requisitos
 
@@ -81,14 +81,15 @@ pytest -v
 - `README.md`: documentación principal del repositorio.
 - `CHANGELOG.md`: historial de cambios y elementos pendientes por versión.
 - `docs/adr/`: registros de decisiones de arquitectura (ADR).
-- `src/forensic_mcp/models.py`: modelos Pydantic de procedencia (`Provenance`), hashes (`HashResult`), metadados de inodo (`FileMetadataResult`), listado de directorios (`DirectoryListingResult`) y errores estructurados (`StructuredError`).
+- `src/forensic_mcp/models.py`: modelos Pydantic de procedencia (`Provenance`), hashes (`HashResult`), metadados de inodo (`FileMetadataResult`), listado de directorios (`DirectoryListingResult`), líneas temporales (`TimelineResult`, `TimelineEvent`) y errores estructurados (`StructuredError`).
 - `src/forensic_mcp/evidence.py`: guardián de acceso de solo lectura (`open_evidence_readonly`) y confinamiento de rutas (`resolve_evidence_path`).
 - `src/forensic_mcp/audit.py`: registrador de auditoría JSONL *append-only* aislado del directorio de evidencias.
-- `src/forensic_mcp/adapters/tsk.py`: adaptador de The Sleuth Kit (`mmls`, `fls`, `istat`) con verificación de geometría MBR, timeouts y *parsers* de texto.
+- `src/forensic_mcp/adapters/tsk.py`: adaptador de The Sleuth Kit (`mmls`, `fls`, `istat`) con verificación de geometría MBR, timeouts, *parsers* de texto y streaming de *bodyfile*.
 - `src/forensic_mcp/tools/hashing.py`: cálculo y verificación de hashes MD5 y SHA-256 (RF1).
 - `src/forensic_mcp/tools/metadata.py`: extracción de metadados normalizados y listado paginado de directorios (RF2).
-- `src/forensic_mcp/server.py`: servidor `MCPServer` sobre `stdio`, exposición de herramientas (`hash_evidence_file`, `get_file_metadata`, `list_directory`) y captura controlada de errores.
-- `tests/`: *fixtures* sintéticas, salidas reales de TSK (`tests/fixtures/tsk/`) y pruebas automatizadas (27 pruebas).
+- `src/forensic_mcp/tools/timeline.py`: generación en flujo, filtrado y paginación determinista de líneas temporales (RF3).
+- `src/forensic_mcp/server.py`: servidor `MCPServer` sobre `stdio`, exposición de herramientas (`hash_evidence_file`, `get_file_metadata`, `list_directory`, `build_timeline`) y captura controlada de errores.
+- `tests/`: *fixtures* sintéticas, salidas reales de TSK (`tests/fixtures/tsk/`) y pruebas automatizadas (36 pruebas).
 
 ## Contrato de seguridad
 

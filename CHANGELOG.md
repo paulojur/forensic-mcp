@@ -8,10 +8,20 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 ### Pendiente
 
-- Herramienta de generación, filtrado y paginación de líneas temporales de eventos (RF3).
 - Herramienta de *parsing* estructurado de registros de autenticación, sistema y transferencias (RF4).
 - Herramienta de ejecución de *scripts* preaprobados mediante catálogo cerrado versionado (RF5).
 - Integración del agente de IA y desarrollo de la interfaz web de revisión.
+
+## [0.3.0] - 2026-11-13
+
+### Añadido
+
+- Herramienta MCP `build_timeline` (RF3) para generación, filtrado en flujo y paginación determinista de líneas temporales forenses basadas en el formato *bodyfile* de The Sleuth Kit (`fls -m`).
+- Procesamiento en flujo (*streaming*) de eventos que evita materializar ficheros o estructuras completas en memoria (filtrado al vuelo por intervalo temporal UTC, prefijo de ruta, tipo de marca MACB e inclusión de eliminados).
+- Ordenación determinista estricta (cronológica ascendente con desempate por inodo, ruta y tipo de marca) que asegura idéntico resultado ante ejecuciones repetidas (RNF2).
+- Tratamiento seguro de nombres de fichero con caracteres de separación (`|`) y marcas temporales indefinidas (timestamp `<= 0` excluido de la línea temporal sin conversión a 1970).
+- Registro de decisión de arquitectura [ADR-004](docs/adr/004-linea-temporal-bodyfile-tsk-frente-a-plaso.md) que justifica el uso de TSK bodyfile en lugar de Plaso para la fase de triaje.
+- Suite de pruebas ampliada a 36 casos con validación de empates de timestamp, pipes en nombres, filtros temporales y pruebas de integración sobre la imagen real.
 
 ## [0.2.1] - 2026-11-12
 
@@ -46,7 +56,8 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - Suite de 13 pruebas con `pytest`, incluyendo *fixture* `.dd` sintética, contraste con `sha256sum`, bloqueo de *sockets* y validación de errores estructurados.
 - Registros de decisiones de arquitectura [ADR-001](docs/adr/001-lectura-directa-de-la-imagen.md) (lectura directa) y [ADR-002](docs/adr/002-separacion-de-evidencia-y-codigo.md) (separación entre evidencia y código).
 
-[Unreleased]: https://github.com/paulojur/forensic-mcp/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/paulojur/forensic-mcp/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/paulojur/forensic-mcp/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/paulojur/forensic-mcp/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/paulojur/forensic-mcp/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/paulojur/forensic-mcp/releases/tag/v0.1.0
