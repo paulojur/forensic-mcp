@@ -13,6 +13,7 @@ from forensic_mcp.models import (
     TimelineEvent,
     TimelineResult,
     new_rpc_call_id,
+    utc_now_iso,
 )
 from forensic_mcp.tools.metadata import get_cached_or_compute_image_hash
 
@@ -34,6 +35,7 @@ def parse_and_filter_bodyfile_stream(
     partition_offset: int,
     image_digest: str,
     rpc_call_id: str,
+    analysis_timestamp_utc: str | None = None,
 ) -> TimelineResult:
     """Parse bodyfile lines in stream, filter on the fly, and paginate with stable sorting."""
     if limit < 1:
@@ -42,6 +44,8 @@ def parse_and_filter_bodyfile_stream(
         limit = 1000
     if offset < 0:
         offset = 0
+
+    analysis_ts = analysis_timestamp_utc or utc_now_iso()
 
     if tag is not None and tag not in _TAG_NAMES:
         raise ForensicToolError(
@@ -146,7 +150,7 @@ def parse_and_filter_bodyfile_stream(
             source_id=source_id,
             hash=image_digest,
             inodo_ruta=inodo_ruta,
-            timestamp_utc=item["timestamp_utc"],
+            timestamp_utc=analysis_ts,
             rpc_call_id=rpc_call_id,
         )
         events.append(
@@ -190,6 +194,7 @@ def build_timeline(
 ) -> TimelineResult:
     """Generate, filter, and paginate a forensic timeline from a disk image in stream."""
     call_id = rpc_call_id or new_rpc_call_id()
+    analysis_ts = utc_now_iso()
     adapter = tsk_adapter or TSKAdapter()
 
     effective_offset = (
@@ -225,5 +230,6 @@ def build_timeline(
         partition_offset=effective_offset,
         image_digest=image_digest,
         rpc_call_id=call_id,
+        analysis_timestamp_utc=analysis_ts,
     )
 

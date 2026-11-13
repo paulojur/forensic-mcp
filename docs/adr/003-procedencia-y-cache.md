@@ -35,6 +35,9 @@ La inmutabilidad de la evidencia no se confía a un único mecanismo, sino a una
 2. **Capa 2 (Garantía arquitectural en herramientas externas):** Las invocaciones a binarios de The Sleuth Kit (`mmls`, `fls`, `istat`) se realizan mediante `subprocess.run` con listas estrictas de argumentos y `shell=False`. Dado que estas invocaciones delegan la lectura al binario externo y no pasan por el guardián de descriptores en memoria, la garantía en este nivel es puramente arquitectural: el catálogo de comandos es cerrado y ninguna de las herramientas invocadas posee flags ni capacidades de modificación sobre el soporte físico.
 3. **Capa 3 (Sistema de ficheros y entorno de ejecución):** Protección a nivel de permisos del sistema operativo (POSIX / ext4). Al iniciar, el servidor verifica si `FORENSIC_MCP_EVIDENCE_ROOT` es gravable (`os.access(..., os.W_OK)`); si lo es, emite un registro de advertencia en `audit.jsonl` indicando que la seguridad depende en ese momento de las capas 1 y 2.
 
+### 5. Determinismo analítico frente a metadados de auditoría
+El requisito de determinismo y reproducibilidad (RNF2) aplica estrictamente a los hallazgos sobre la evidencia: los datos del evento analizado (`timestamp_utc` del artefacto, ruta, inodo, tipo de marca, tamaño y asignación) son rigurosamente idénticos ante invocaciones repetidas. En contraste, los campos `timestamp_utc` y `rpc_call_id` del bloque `Provenance` pertenecen a la capa de auditoría del acto pericial; registran cuándo se ejecutó la consulta analítica y varían legítimamente en cada invocación sin comprometer el determinismo científico de los resultados.
+
 ## Consecuencias
 
 - **Positivas:** Cumplimiento simultáneo del RNF4 (< 30s) y de la auditabilidad estricta; semántica de procedencia homogénea y predecible para el agente de IA; protección en profundidad documentada con claridad técnica sobre los límites de cada capa.

@@ -12,6 +12,15 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - Herramienta de ejecución de *scripts* preaprobados mediante catálogo cerrado versionado (RF5).
 - Integración del agente de IA y desarrollo de la interfaz web de revisión.
 
+## [0.3.1] - 2026-11-13
+
+### Corregido
+
+- Corrección semántica en `build_timeline`: el campo `provenance.timestamp_utc` registra ahora el instante en que se ejecuta la llamada de análisis (`utc_now_iso()`), calculado una única vez por llamada, alineándose con la semántica del resto de herramientas del servidor y con la ADR-003.
+- Preservación íntegra del timestamp del artefacto en el campo `TimelineEvent.timestamp_utc`.
+- Formalización y prueba de la separación entre el determinismo analítico (contenido de los eventos y orden cronológico idénticos ante llamadas repetidas, RNF2) y los metadados de auditoría (que varían por diseño entre llamadas).
+- Nueva prueba `test_real_image_build_timeline_provenance_audit_distinction` que verifica que dos llamadas idénticas devuelven marcas de auditoría distintas pero contenido analítico idéntico.
+
 ## [0.3.0] - 2026-11-13
 
 ### Añadido
@@ -56,7 +65,8 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - Suite de 13 pruebas con `pytest`, incluyendo *fixture* `.dd` sintética, contraste con `sha256sum`, bloqueo de *sockets* y validación de errores estructurados.
 - Registros de decisiones de arquitectura [ADR-001](docs/adr/001-lectura-directa-de-la-imagen.md) (lectura directa) y [ADR-002](docs/adr/002-separacion-de-evidencia-y-codigo.md) (separación entre evidencia y código).
 
-[Unreleased]: https://github.com/paulojur/forensic-mcp/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/paulojur/forensic-mcp/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/paulojur/forensic-mcp/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/paulojur/forensic-mcp/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/paulojur/forensic-mcp/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/paulojur/forensic-mcp/compare/v0.1.0...v0.2.0

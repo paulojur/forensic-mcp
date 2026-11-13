@@ -109,6 +109,64 @@ def test_real_image_build_timeline_determinism(
         assert e1["is_allocated"] == e2["is_allocated"]
 
 
+@pytest.mark.skipif(
+    not is_tsk_and_real_image_available(),
+    reason="The Sleuth Kit or real hacking-case.dd image not present in test environment",
+)
+def test_real_image_build_timeline_provenance_audit_distinction(
+    tmp_path: Path,
+    audit_log_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Repeated calls produce different audit timestamps in provenance, but identical analytical data."""
+    evidence_dir = REAL_IMAGE_PATH.parent
+    server = create_server(audit_log_path=audit_log_path, evidence_root=evidence_dir)
+
+    # Sequence of distinct analysis timestamps to simulate two separate executions
+    timestamps = iter(["2026-11-13T16:00:00Z", "2026-11-13T16:05:00Z"])
+    monkeypatch.setattr(
+        "forensic_mcp.tools.timeline.utc_now_iso",
+        lambda: next(timestamps),
+    )
+
+    params = {
+        "image_path": str(REAL_IMAGE_PATH),
+        "case_id": "CFREDS-HACKING",
+        "source_id": "SCHARDT-001",
+        "path_prefix": "/Documents and Settings/Mr. Evil",
+        "limit": 10,
+        "offset": 0,
+        "source_hash": f"sha256:{REAL_SHA256}",
+    }
+
+    call1 = asyncio.run(server.call_tool("build_timeline", params))
+    call2 = asyncio.run(server.call_tool("build_timeline", params))
+
+    events1 = call1.structured_content["events"]
+    events2 = call2.structured_content["events"]
+
+    assert len(events1) == 10
+    assert len(events2) == 10
+
+    # 1. Audit metadata differs by design between executions
+    for e1, e2 in zip(events1, events2, strict=True):
+        prov1 = e1["provenance"]
+        prov2 = e2["provenance"]
+        assert prov1["timestamp_utc"] == "2026-11-13T16:00:00Z"
+        assert prov2["timestamp_utc"] == "2026-11-13T16:05:00Z"
+        assert prov1["timestamp_utc"] != prov2["timestamp_utc"]
+        assert prov1["rpc_call_id"] != prov2["rpc_call_id"]
+
+    # 2. Analytical finding content remains strictly identical (RNF2 determinism)
+    for e1, e2 in zip(events1, events2, strict=True):
+        assert e1["timestamp_utc"] == e2["timestamp_utc"]  # artifact timestamp (2004) untouched
+        assert e1["tag"] == e2["tag"]
+        assert e1["file_path"] == e2["file_path"]
+        assert e1["inode"] == e2["inode"]
+        assert e1["size_bytes"] == e2["size_bytes"]
+        assert e1["is_allocated"] == e2["is_allocated"]
+
+
 def test_timeline_outside_evidence_root_rejected(
     tmp_path: Path,
     evidence_dir: Path,

@@ -89,7 +89,7 @@ pytest -v
 - `src/forensic_mcp/tools/metadata.py`: extracción de metadados normalizados y listado paginado de directorios (RF2).
 - `src/forensic_mcp/tools/timeline.py`: generación en flujo, filtrado y paginación determinista de líneas temporales (RF3).
 - `src/forensic_mcp/server.py`: servidor `MCPServer` sobre `stdio`, exposición de herramientas (`hash_evidence_file`, `get_file_metadata`, `list_directory`, `build_timeline`) y captura controlada de errores.
-- `tests/`: *fixtures* sintéticas, salidas reales de TSK (`tests/fixtures/tsk/`) y pruebas automatizadas (36 pruebas).
+- `tests/`: *fixtures* sintéticas, salidas reales de TSK (`tests/fixtures/tsk/`) y pruebas automatizadas (37 pruebas).
 
 ## Contrato de seguridad
 
@@ -97,6 +97,7 @@ pytest -v
 - Operación sin red en tiempo de ejecución: el transporte `stdio` no abre *sockets* durante el análisis, verificado mediante prueba automatizada que intercepta `socket.socket`.
 - Sin construcción de comandos de *shell*: no se concatenan cadenas para invocar intérpretes ni binarios externos.
 - Errores estructurados y auditoría completa: toda llamada genera un `rpc_call_id` único registrado en `audit.jsonl` (solo metadatos, nunca contenido de ficheros) y los errores se devuelven como JSON estructurado sin *stack traces*.
+- Determinismo analítico y trazabilidad (RNF2): el determinismo aplica a los datos de la evidencia devueltos por las herramientas (orden cronológico estable, inodos, hashes y marcas temporales originales del artefacto). Los metadados de auditoría en `Provenance` (`timestamp_utc` y `rpc_call_id`) reflejan la ejecución de la consulta pericial (`utc_now_iso()`), variando por diseño en cada invocación.
 
 ## Licencia y citación
 
